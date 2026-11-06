@@ -6,7 +6,7 @@ const arg = process.argv[2]
 if (!arg) {
   console.log('Usage: npm run roll -- <formula|presetN>')
   console.log('  Single formula:    2d6  1d20+5  4d6kh3  2d20adv')
-  console.log('  Multiple formulas: 1d20+15|1d10+5  (pipe-separated)')
+  console.log('  Multiple formulas: "1d20+15|1d10+5"  (pipe-separated, quoted)')
   console.log('  Presets:           preset1')
   process.exit(1)
 }
