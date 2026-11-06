@@ -6,7 +6,8 @@ const arg = process.argv[2]
 if (!arg) {
   console.log('Usage: npm run roll -- <formula|presetN>')
   console.log('  Single formula:    2d6  1d20+5  4d6kh3  2d20adv')
-  console.log('  Multiple formulas: "1d20+15|1d10+5"  (pipe-separated, quoted)')
+  console.log('  With label:        "1d20+9(attack roll)"')
+  console.log('  Multiple formulas: "1d20+15(attack)|1d10+5(damage)"  (quoted, pipe-separated)')
   console.log('  Presets:           preset1')
   process.exit(1)
 }
@@ -53,7 +54,13 @@ const runPreset1 = () => {
   }
 }
 
-const runSingleFormula = formula => {
+const parseSegment = segment => {
+  const match = segment.match(/^(.*)\(([^)]+)\)$/)
+  if (match) return { formula: match[1].trim(), label: match[2].trim() }
+  return { formula: segment.trim(), label: null }
+}
+
+const runSingleFormula = (formula, label) => {
   let result
   try {
     result = roll(formula)
@@ -61,7 +68,8 @@ const runSingleFormula = formula => {
     console.error(`Error rolling "${formula}": ${err.message}`)
     process.exit(1)
   }
-  console.log(`Formula: ${result.formula}`)
+  const header = label ? `${label} [${result.formula}]` : `Formula: ${result.formula}`
+  console.log(header)
   result.dice.forEach(g => console.log(`  ${formatGroup(g)}`))
   if (result.modifier !== 0) console.log(`  modifier: ${result.modifier > 0 ? '+' : ''}${result.modifier}`)
   console.log(`Total: ${result.total}`)
@@ -71,11 +79,13 @@ const runSingleFormula = formula => {
 if (arg === 'preset1') {
   runPreset1()
 } else if (arg.includes('|')) {
-  const formulas = arg.split('|')
-  formulas.forEach((formula, i) => {
-    runSingleFormula(formula)
-    if (i < formulas.length - 1) console.log()
+  const segments = arg.split('|')
+  segments.forEach((segment, i) => {
+    const { formula, label } = parseSegment(segment)
+    runSingleFormula(formula, label)
+    if (i < segments.length - 1) console.log()
   })
 } else {
-  runSingleFormula(arg)
+  const { formula, label } = parseSegment(arg)
+  runSingleFormula(formula, label)
 }

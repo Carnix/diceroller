@@ -23,17 +23,26 @@ npm run roll -- 4d6kh3
 npm run roll -- 2d20adv
 ```
 
+### Labels
+
+Append `(label)` to any formula to name the roll in the output:
+
+```bash
+npm run roll -- "1d20+9(attack roll)"
+npm run roll -- "10d6(fireball damage)"
+```
+
 ### Multiple formulas
 
 Separate formulas with `|` to roll them all in one command. **Quote the argument** — shells treat `|` as a pipe operator otherwise:
 
 ```bash
-npm run roll -- "1d20+15|1d10+5"
+npm run roll -- "1d20+15(attack)|1d10+5(damage)"
+npm run roll -- "10d6(bob's fireball)|1d20(kobold save)|1d20+9(digby's attack)|2d8(digby's damage)"
 npm run roll -- "4d6kh3|4d6kh3|4d6kh3|4d6kh3|4d6kh3|4d6kh3"
-npm run roll -- "1d8+3|1d6|1d4+1"
 ```
 
-Each formula is rolled independently and printed in order.
+Labels are optional — unlabelled formulas work fine alongside labelled ones.
 
 ### Presets
 
@@ -64,13 +73,22 @@ Spaces and capitals are accepted — `2D6 + 3` works.
 
 ## Output format
 
-Single formula:
+Without a label:
 
 ```text
 Formula: 1d20+5
   d20: [14]
   modifier: +5
 Total: 19
+```
+
+With a label, the label leads and the formula appears in brackets:
+
+```text
+digby's attack roll [1d20+9]
+  d20: [11]
+  modifier: +9
+Total: 20
 ```
 
 Dropped dice (keep-highest, etc.) are shown in parentheses:
@@ -84,13 +102,11 @@ Total: 15
 Multiple formulas print each result separated by a blank line:
 
 ```text
-Formula: 1d20+15
-  d20: [12]
-  modifier: +15
-Total: 27
+bob's fireball [10d6]
+  d6: [3, 5, 2, 4, 6, 1, 3, 2, 5, 4]
+Total: 35
 
-Formula: 1d10+5
-  d10: [7]
-  modifier: +5
-Total: 12
+kobold save [1d20]
+  d20: [8]
+Total: 8
 ```
