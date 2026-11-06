@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "roll": "node roll.js"
+  },
+  "dependencies": {
+    "opendice": "^2.0.0"
+  }
+}
